@@ -34,7 +34,7 @@
 #include <string.h>
 #include "driver.h"
 
-#if RGB_ENABLE // Declared in my_machine.h - you must add in the section with the included plugins
+#if STATUS_LIGHT_ENABLE // Declared in my_machine.h - you must add in the section with the included plugins
 
 #include "grbl/protocol.h"
 #include "grbl/hal.h"
@@ -376,6 +376,7 @@ static void rgb_set_lstate (uint8_t newstate) {
 // check - check if M-code is handled in this plugin.
 // parameters: mcode - M-code to check for (some are predefined in user_mcode_t in grbl/gcode.h), use a cast if not.
 // returns:    mcode if handled, UserMCode_Ignore otherwise (UserMCode_Ignore is defined in grbl/gcode.h).
+
 static user_mcode_t check (user_mcode_t mcode)
 {
     return mcode == RGB_Inspection_Light  // Must be added to gcode.h 
@@ -997,7 +998,7 @@ static void driverReset (void)
 
 // INIT FUNCTION - CALLED FROM plugins_init.h()
 // void my_plugin_init() {
-void rgb_init() {
+void status_light_init(void) {
 
     // CLAIM AUX OUTPUTS FOR RGB LIGHT RELAYS
     if(hal.port.num_digital_out >= 3) {
