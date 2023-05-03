@@ -571,6 +571,8 @@ static void realtimeConditionLights(void) {
     // Coolant & Mist (MAGENTA Solid)
     // Also warnings for these items within STATE_HOLD
 
+    spindle_ptrs_t *spindle = spindle_get(0);
+
     // If only used inside this function then do not use 'static', static reserves across entire lifetime
     uint8_t idx = 0;
     bool rgb_cond_changed = 0;       // Tracks if conditions changed since previous loop
@@ -589,7 +591,7 @@ static void realtimeConditionLights(void) {
 
     // Update current status
     CONDITIONS[ST_ILIGHT].curr = inspection_light_on;
-    CONDITIONS[ST_SPINDLE].curr = hal.spindle.get_state().on;
+    CONDITIONS[ST_SPINDLE].curr = spindle->get_state().on;
     CONDITIONS[ST_FLOOD].curr = hal.coolant.get_state().flood;
     CONDITIONS[ST_MIST].curr = hal.coolant.get_state().mist;
     // Conditions for new MCodes, when added, go here
@@ -853,9 +855,10 @@ static void realtimeConditionLights(void) {
 
 static void RGBUpdateState (sys_state_t state){
         current_state = state;
+        spindle_ptrs_t *spindle = spindle_get(0);
   
     // If our state has changed, or we want to force the lights to update, and no override light conditions exist
-if ( ((current_state != last_state) || (rgb_default_trigger == 1)) && (!(inspection_light_on)) && (!(hal.spindle.get_state().on))  \
+if ( ((current_state != last_state) || (rgb_default_trigger == 1)) && (!(inspection_light_on)) && (!(spindle->get_state().on))  \
         && (!(hal.coolant.get_state().flood)) && (!hal.coolant.get_state().mist)  ) { 
 
         last_state = current_state;
