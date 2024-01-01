@@ -595,7 +595,8 @@ static void realtimeConditionLights(void) {
     CONDITIONS[ST_ILIGHT].curr = inspection_light_on;
 #if GRBL_BUILD >= 20230213
     spindle_ptrs_t *spindle = spindle_get(0);
-    CONDITIONS[ST_SPINDLE].curr = spindle->get_state(spindle).on;
+    if(spindle->get_state)
+        CONDITIONS[ST_SPINDLE].curr = spindle->get_state(spindle).on;
 #else
     CONDITIONS[ST_SPINDLE].curr = hal.spindle.get_state().on;
 #endif
@@ -866,8 +867,9 @@ static void RGBUpdateState (sys_state_t state){
     // If our state has changed, or we want to force the lights to update, and no override light conditions exist
 #if GRBL_BUILD > 20230213
 spindle_ptrs_t *spindle = spindle_get(0);
-if ( ((current_state != last_state) || (rgb_default_trigger == 1)) && (!(inspection_light_on)) && (!(spindle->get_state(spindle).on))  \
-        && (!(hal.coolant.get_state().flood)) && (!hal.coolant.get_state().mist)  ) {
+if(spindle->get_state){
+    if ( ((current_state != last_state) || (rgb_default_trigger == 1)) && (!(inspection_light_on)) && (!(spindle->get_state(spindle).on))  \
+            && (!(hal.coolant.get_state().flood)) && (!hal.coolant.get_state().mist)  ) {
 #else
 if ( ((current_state != last_state) || (rgb_default_trigger == 1)) && (!(inspection_light_on)) && (!(hal.spindle.get_state().on))  \
         && (!(hal.coolant.get_state().flood)) && (!hal.coolant.get_state().mist)  ) {
@@ -903,6 +905,9 @@ if ( ((current_state != last_state) || (rgb_default_trigger == 1)) && (!(inspect
                 break;
             }
     }
+#if GRBL_BUILD > 20230213
+  }
+#endif
 }
 
 static void RGBonStateChanged (sys_state_t state)
