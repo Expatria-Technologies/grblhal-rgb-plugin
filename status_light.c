@@ -202,20 +202,6 @@ static alarm_cfg_t alarm_lights[] = {
     { RGB_GREEN, RGB_RED, RGB_OFF, 2, { RGB_SLOW, RGB_FAST, RGB_PULSE } }        // Alarm_MotorFault = 17
 };
 
-// GCC: __builtin_popcount(...)
-// K&R version:
-static uint_fast8_t bit_count (uint32_t n)
-{
-    uint_fast8_t count = 0;
-
-    while(n) {
-        n &= (n - 1);
-        count++;
-    }
-
-    return count;
-}
-
 // Physically sets the requested RGB light combination.
 // Always sets all three LEDs to avoid unintended light combinations
 
